@@ -4,14 +4,21 @@ using System.Threading;
 using System.IO;
 using Gtk;
 using RMSCBookletMaker;
-//using iTextSharp.text;
 using iTextSharp.text.pdf;
 
+/// <summary>
+/// The main window of the application.
+/// </summary>
 public partial class MainWindow: Gtk.Window
 {	
+	// The name of the PDF file to construct.
 	private string pdfFileName;
+	// The selected show
 	private long selectedShowId;
 	
+	/// <summary>
+	/// Constructs a new MainWindow object.
+	/// </summary>
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
@@ -19,6 +26,10 @@ public partial class MainWindow: Gtk.Window
 		SetUpStoreCombo();
 	}
 	
+	/// <summary>
+	/// Loads the store combo box with the stores available in the
+	/// data base. Got to give the user something to choose from.
+	/// </summary>
 	private void SetUpStoreCombo()
 	{
 		ListStore ls = new ListStore(GLib.GType.String, GLib.GType.Int64);
@@ -30,12 +41,32 @@ public partial class MainWindow: Gtk.Window
 		cbShows.Model = ls;
 	}
 	
+	/// <summary>
+	/// Event handler for the application Delete event. Actually
+	/// exits the application.
+	/// </summary>
+	/// <param name="sender">
+	/// The control which generated the event.
+	/// </param>
+	/// <param name="a">
+	/// The arguments for the event.
+	/// </param>
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 	{
 		Application.Quit ();
 		a.RetVal = true;
 	}
 	
+	/// <summary>
+	/// Helper method to display a message box to ask the user if 
+	/// the selected file name should be overwritten.
+	/// </summary>
+	/// <param name="fileName">
+	/// The name of the file to be overwritten.
+	/// </param>
+	/// <returns>
+	/// True if the file should be overwritten.
+	/// </returns>
 	private bool OverwriteFile(string fileName)
 	{
 		MessageDialog mdlg = new MessageDialog(this,
@@ -51,6 +82,15 @@ public partial class MainWindow: Gtk.Window
 		return overwrite;
 	}
 
+	/// <summary>
+	/// Event handler for when the Save button is clicked.
+	/// </summary>
+	/// <param name="sender">
+	/// The save button.
+	/// </param>
+	/// <param name="e">
+	/// The arguments associated with the event.
+	/// </param>
 	protected virtual void SaveButtonClicked (object sender, System.EventArgs e)
 	{
 		FileChooserDialog dlg = new FileChooserDialog("Choose the name of the PDF File",
@@ -89,11 +129,23 @@ public partial class MainWindow: Gtk.Window
 		}
 	}
 
+	/// <summary>
+	/// Handles the event when the exit button is clicked.
+	/// </summary>
+	/// <param name="sender">
+	/// The exit button.
+	/// </param>
+	/// <param name="e">
+	/// The event arguments.
+	/// </param>
 	protected virtual void ExitButtonClicked (object sender, System.EventArgs e)
 	{
 		Application.Quit ();
 	}
 	
+	/// <summary>
+	/// Helper method to actually construct the PDF file for the show.
+	/// </summary>
 	private void CreatePDF()
 	{
 		pbProgress.Visible = true;
@@ -133,6 +185,15 @@ public partial class MainWindow: Gtk.Window
 		doc.Close();
 	}
 
+	/// <summary>
+	/// Event handler for the show cursor changing.
+	/// </summary>
+	/// <param name="sender">
+	/// The object that sent the event.
+	/// </param>
+	/// <param name="e">
+	/// The event arguments.
+	/// </param>
 	protected virtual void ShowCursorChanged (object sender, System.EventArgs e)
 	{
 		TreeIter iter = TreeIter.Zero;

@@ -8,11 +8,16 @@ using log4net;
 namespace RMSCBookletMaker
 {
 	
-	
+	/// <summary>
+	/// This class exposes the data access methods to support the booklet application.
+	/// </summary>
 	public class BookletDAO
 	{
+		// Select all the shows ordered by create date descending.
 		private const string GET_SHOWS_SQL = "SELECT SHOW_ID, DESCRIPTION FROM SHOW ORDER BY CREATE_DATE DESC";
+		// Select a specific show by id
 		private const string GET_SHOW_INFO_SQL = "SELECT * FROM SHOW WHERE SHOW_ID = {0}";
+		// Select the exhibitor card information.
 		private const string GET_EXHIBITOR_CARD_SQL = @"SELECT
 		        e.FIRST_NAME || ' ' || e.LAST_NAME AS FULL_NAME,
 		        ea.ROOM_ASSIGNMENT,
@@ -34,14 +39,27 @@ namespace RMSCBookletMaker
 		      ORDER BY
 		        e.LAST_NAME,
 		        e.FIRST_NAME";
+		// Select the exhibitor name and room number information.
 		private const string EXHIBITOR_LINE_ROOM_SQL = "SELECT LINE, ROOM_ASSIGNMENT, FIRST_NAME || ' ' || LAST_NAME AS FULL_NAME FROM LINE_ROOM_EXHIBITOR WHERE SHOW_ID = {0} ORDER BY LINE, LAST_NAME, FIRST_NAME";
 		
+		// Get the logger for the class.
 		private static ILog log = LogManager.GetLogger(typeof(BookletDAO));
 		
+		/// <summary>
+		/// Constructs a new BookletDAO object. Constructor is private to disallow
+		/// construction.
+		/// </summary>
 		private BookletDAO()
 		{
 		}
 		
+		/// <summary>
+		/// Gets a list of all the shows in the system.
+		/// </summary>
+		/// <returns>
+		/// A list of all the shows existing in the system in reverse order by creation
+		/// date so the latest show appears at the top of the list.
+		/// </returns>
 		public static List<Show> GetShows()
 		{
 			List<Show> shows = new List<Show>();
@@ -73,6 +91,16 @@ namespace RMSCBookletMaker
 			return shows;
 		}
 		
+		/// <summary>
+		/// Returns the information about a specific show.
+		/// </summary>
+		/// <param name="showId">
+		/// The unique identifier of the show for which information is to be
+		/// retrieved.
+		/// </param>
+		/// <returns>
+		/// Reference to a ShowInfo object describing the show.
+		/// </returns>
 		public static ShowInfo GetShowInfo(long showId)
 		{
 			Console.WriteLine(string.Format("ShowInfo({0})", showId));
@@ -117,6 +145,16 @@ namespace RMSCBookletMaker
 			return showInfo;
 		}
 		
+		/// <summary>
+		/// Returns a list of information about exhibitors attending a specified show.
+		/// </summary>
+		/// <param name="showId">
+		/// The unique identifer of the show for which information about attending
+		/// exhibitors is required.
+		/// </param>
+		/// <returns>
+		/// List of attending Exhibitor information.
+		/// </returns>
 		public static List<ExhibitorNameCard> GetExhibitorCards(long showId)
 		{
 			string sql = string.Format(GET_EXHIBITOR_CARD_SQL, showId);
@@ -177,6 +215,16 @@ namespace RMSCBookletMaker
 			return cards;
 		}
 
+		/// <summary>
+		/// Returns the list of exhibitor attendance information for a particular
+		/// show.
+		/// </summary>
+		/// <param name="showId">
+		/// The unique identifier of the show for which the list is required.
+		/// </param>
+		/// <returns>
+		/// A list of exhibitor names, lines and room numbers attending the show.
+		/// </returns>
 		public static List<ExhibitorLineRoom> GetExhibitorLineRoom(long showId)
 		{
 			string sql = string.Format(EXHIBITOR_LINE_ROOM_SQL, showId);

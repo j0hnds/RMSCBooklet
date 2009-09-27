@@ -1,24 +1,36 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 
 namespace RMSCBookletMaker
 {
 	
-	
+	/// <summary>
+	/// A PDF Document to construct the 
+	/// </summary>
 	public class RMSCBookletPDF : Document
 	{
 		
+		/// <summary>
+		/// Constructs a new RMSCBookletPDF.
+		/// </summary>
 		public RMSCBookletPDF() :
 			base(iTextSharp.text.PageSize.LEGAL)
 		{
 		}
 		
+		/// <summary>
+		/// Renders the title page of the booklet.
+		/// </summary>
+		/// <param name="showInfo">
+		/// Reference to the Show Information for the booklet.
+		/// </param>
 		public void TitlePage(ShowInfo showInfo)
 		{
-			Image img = Image.GetInstance("file:///home/djs/Projects/RMSCBooklet/RMSCBookletMaker/mountains.jpeg");
+			Image img = Image.GetInstance(ConfigurationManager.AppSettings["mountainsImage"]);
 			img.Alignment = Image.MIDDLE_ALIGN;
 			Console.WriteLine(string.Format("Image = {0}", img));
 			Add(img);
@@ -107,14 +119,18 @@ namespace RMSCBookletMaker
 
 			p = new Paragraph("Friday & Monday - by Appointment only");
 			p.Font.Size = 15;
-			// p.Font.SetStyle(Font.BOLD);
 			p.Alignment = Element.ALIGN_CENTER;
-			// p.SpacingAfter = 72;
 			Add(p);
 			
 			NewPage();
 		}
-		
+
+		/// <summary>
+		/// Renders the Welcome Page for the booklet.
+		/// </summary>
+		/// <param name="showInfo">
+		/// Reference to the show information.
+		/// </param>
 		public void WelcomePage(ShowInfo showInfo)
 		{
 			Paragraph p = new Paragraph("Welcome to the Market");
@@ -131,15 +147,11 @@ namespace RMSCBookletMaker
 			                           startDate.Year);
 			p = new Paragraph(txt);
 			p.Font.Size = 20;
-			// p.Alignment = Element.ALIGN_CENTER;
-			// p.Font.SetStyle(Font.BOLD | Font.UNDERLINE);
 			p.SpacingAfter = 20;
 			Add(p);
 
 			p = new Paragraph("We have over 60 Reps, marketing over 190 lines including shoes, socks, slippers and handbags.");
 			p.Font.Size = 20;
-			// p.Alignment = Element.ALIGN_CENTER;
-			// p.Font.SetStyle(Font.BOLD | Font.UNDERLINE);
 			p.SpacingAfter = 72;
 			Add(p);
 
@@ -152,29 +164,21 @@ namespace RMSCBookletMaker
 
 			p = new Paragraph("Lunch will be served Saturday and Sunday from 11:30am to 1:30pm in the Aspen room and lounge area.");
 			p.Font.Size = 20;
-			// p.Alignment = Element.ALIGN_CENTER;
-			// p.Font.SetStyle(Font.BOLD | Font.UNDERLINE);
 			p.SpacingAfter = 20;
 			Add(p);
 
 			p = new Paragraph("Retailers and exhibitors - We will be having a Saturday night social hour that will start @ 5:00pm in the Aspen room.");
 			p.Font.Size = 20;
-			// p.Alignment = Element.ALIGN_CENTER;
-			// p.Font.SetStyle(Font.BOLD | Font.UNDERLINE);
 			p.SpacingAfter = 20;
 			Add(p);
 
 			p = new Paragraph("Snacks and soft drinks will be provided.");
 			p.Font.Size = 20;
-			// p.Alignment = Element.ALIGN_CENTER;
-			// p.Font.SetStyle(Font.BOLD | Font.UNDERLINE);
 			p.SpacingAfter = 20;
 			Add(p);
 
 			p = new Paragraph("Alcoholic beverages will be provided by the exhibitors.");
 			p.Font.Size = 20;
-			// p.Alignment = Element.ALIGN_CENTER;
-			// p.Font.SetStyle(Font.BOLD | Font.UNDERLINE);
 			p.SpacingAfter = 72;
 			Add(p);
 
@@ -182,7 +186,6 @@ namespace RMSCBookletMaker
 			p.Font.Size = 30;
 			p.Alignment = Element.ALIGN_CENTER;
 			p.Font.SetStyle(Font.BOLD);
-			// p.SpacingAfter = 144;
 			Add(p);
 
 			p = new Paragraph(showInfo.NextShow);
@@ -195,27 +198,27 @@ namespace RMSCBookletMaker
 			p = new Paragraph(string.Format("Show Coordinator: {0}", showInfo.Coordinator));
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
-			// p.Font.SetStyle(Font.BOLD);
-			// p.SpacingAfter = 144;
 			Add(p);
 
 			p = new Paragraph(string.Format("Phone: {0}", showInfo.CoordinatorPhone));
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
-			// p.Font.SetStyle(Font.BOLD);
-			// p.SpacingAfter = 144;
 			Add(p);
 
 			p = new Paragraph(showInfo.CoordinatorEmail);
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
-			// p.Font.SetStyle(Font.BOLD);
-			// p.SpacingAfter = 144;
 			Add(p);
 			
 			NewPage();
 		}
-		
+
+		/// <summary>
+		/// Renders the Exhibitor name card pages for the booklet.
+		/// </summary>
+		/// <param name="cards">
+		/// The list of exhibitor name cards.
+		/// </param>
 		public void ExhibitorNameCards(List<ExhibitorNameCard> cards)
 		{
 			PdfPTable table = new PdfPTable(2);
@@ -275,7 +278,6 @@ namespace RMSCBookletMaker
 				if (card.Email != null)
 				{
 					chk = new Chunk(string.Format("{0}\n", card.Email));
-					// chk.Font.SetStyle(Font.UNDERLINE);
 					p.Add(chk);
 				}
 				
@@ -289,7 +291,6 @@ namespace RMSCBookletMaker
 				PdfPCell cell = new PdfPCell(p);
 				cell.Border = PdfPCell.NO_BORDER;
 				cell.NoWrap = false;
-				// cell.PaddingBottom = 30f;
 				cell.FixedHeight = 220f;
 				cell.PaddingRight = 10f;
 				table.AddCell(cell);
@@ -300,7 +301,6 @@ namespace RMSCBookletMaker
 				PdfPCell cell = new PdfPCell(new Paragraph(""));
 				cell.Border = PdfPCell.NO_BORDER;
 				cell.NoWrap = false;
-				// cell.PaddingBottom = 30f;
 				cell.FixedHeight = 220f;
 				cell.PaddingRight = 10f;
 				table.AddCell(cell);
@@ -310,7 +310,13 @@ namespace RMSCBookletMaker
 			
 			NewPage();
 		}
-		
+
+		/// <summary>
+		/// Renders the exhibitor line and room table pages of the document.
+		/// </summary>
+		/// <param name="elrs">
+		/// The list of exhibitor line room information objects.
+		/// </param>
 		public void LineRoomExhibitor(List<ExhibitorLineRoom> elrs)
 		{
 			PdfPTable table = new PdfPTable(3);
@@ -374,9 +380,18 @@ namespace RMSCBookletMaker
 			
 			Add(table);
 		}
-		
+
+		/// <summary>
+		/// Renders the thank you page for the booklet.
+		/// </summary>
+		/// <param name="showInfo">
+		/// Reference to the Show Information object.
+		/// </param>
 		public void ThankYou(ShowInfo showInfo)
 		{
+// The following comments are for the inclusion of notes pages.
+// We currently don't want this, but I'm leaving it in for the future.
+//
 //			int currentPage = this.PageNumber;
 //			Console.WriteLine(string.Format("Current Page: {0}", currentPage));
 //			int remainder = currentPage % 4;
@@ -403,38 +418,31 @@ namespace RMSCBookletMaker
 			Add(p);
 			
 			p = new Paragraph("FOR COMING TO THE SHOW");
-			// p.Font.SetStyle(Font.BOLD);
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
 			p.SpacingAfter = 200;
 			Add(p);
 			
 			p = new Paragraph("NEXT MARKET");
-			// p.Font.SetStyle(Font.BOLD);
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
 			p.SpacingAfter = 20;
 			Add(p);
 			
 			p = new Paragraph(showInfo.NextShow);
-			// p.Font.SetStyle(Font.BOLD);
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
 			p.SpacingAfter = 200;
 			Add(p);
 			
 			p = new Paragraph(showInfo.Location);
-			// p.Font.SetStyle(Font.BOLD);
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
-			// p.SpacingAfter = 144;
 			Add(p);
 			
 			p = new Paragraph(showInfo.LocationAddress);
-			// p.Font.SetStyle(Font.BOLD);
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
-			// p.SpacingAfter = 144;
 			Add(p);
 
 			string addr = string.Format("{0}, {1}  {2}",
@@ -442,28 +450,22 @@ namespace RMSCBookletMaker
 			                            showInfo.LocationState,
 			                            showInfo.LocationPostalCode);
 			p = new Paragraph(addr);
-			// p.Font.SetStyle(Font.BOLD);
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
-			// p.SpacingAfter = 144;
 			Add(p);
 			
 			string phone = string.Format("Phone: {0}",
 			                            showInfo.LocationPhone);
 			p = new Paragraph(phone);
-			// p.Font.SetStyle(Font.BOLD);
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
-			// p.SpacingAfter = 144;
 			Add(p);
 			
 			string fax = string.Format("Fax: {0}",
 			                            showInfo.LocationFax);
 			p = new Paragraph(fax);
-			// p.Font.SetStyle(Font.BOLD);
 			p.Font.Size = 20;
 			p.Alignment = Element.ALIGN_CENTER;
-			// p.SpacingAfter = 144;
 			Add(p);
 			
 		}
