@@ -150,7 +150,10 @@ namespace RMSCBookletMaker
 			p.SpacingAfter = 20;
 			Add(p);
 
-			p = new Paragraph("We have over 60 Reps, marketing over 190 lines including shoes, socks, slippers and handbags.");
+			txt = string.Format("We have over {0} Reps, marketing over {1} lines including shoes, socks, slippers and handbags.",
+			                    ConfigurationManager.AppSettings["num_exhibitors"],
+			                    ConfigurationManager.AppSettings["num_lines"]);
+			p = new Paragraph(txt);
 			p.Font.Size = 20;
 			p.SpacingAfter = 72;
 			Add(p);
