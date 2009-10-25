@@ -1,0 +1,101 @@
+# -*- Mode: ruby -*-
+#
+# Rakefile to build and construct a distribution package
+# for this .NET package.
+
+require 'rake/clean'
+require '../DotNet'
+
+PROJECT_NAME = 'RMSCBookletMaker'
+
+DEBUG = (ENV['DEBUG_FLAG']) ? ENV['DEBUG_FLAG'].match(/^[tT]rue$/) != nil : false
+
+# The directory where the DLL will be deployed
+BIN_DIR = (ENV['BIN_DIR']) ? ENV['BIN_DIR'] : '../bin'
+
+ITEXT_SHARP_DIR = '/home/djs/ThirdParty/iTextSharp'
+
+# The output directories to use
+BUILD_DIR, TEST_DIR = create_output_directories DEBUG
+
+# Set up the required target names
+PROJECT_TARGET = "#{BUILD_DIR}/#{PROJECT_NAME}.exe"
+DEPLOY_PATH = "#{BIN_DIR}/#{PROJECT_NAME}.exe"
+TEST_PATH = "#{TEST_DIR}/#{PROJECT_NAME}.exe"
+TEST_RESULTS_PATH = "#{TEST_DIR}/#{PROJECT_NAME}-Test.xml"
+CONFIG_FILE = "#{PROJECT_NAME}.exe.config"
+
+# Define the clean/clobber paths
+CLEAN.include(BUILD_DIR) 
+CLEAN.include(TEST_DIR) 
+CLEAN.include("TestResult.xml")
+CLOBBER.include(DEPLOY_PATH)
+CLOBBER.include("#{BIN_DIR}/#{CONFIG_FILE}")
+CLOBBER.include("#{BIN_DIR}/itextsharp.dll")
+
+# Set up the default target to build the DLL
+task :default => [:compile ]
+
+task :compile => [ :init, PROJECT_TARGET ]
+
+task :init do
+  mkdir_p BUILD_DIR if not File.exist?(BUILD_DIR)
+  mkdir_p BIN_DIR if not File.exist?(BIN_DIR)
+end
+
+task :testinit do
+  mkdir_p TEST_DIR if not File.exist?(TEST_DIR)
+end
+
+# Source files excluding the test files.
+SRC = FileList['**/*.cs']
+# Source files including the test files
+TEST_SRC = FileList['**/*.cs']
+
+# Build the DLL only if it is out of date with respect to any
+# of the source files.
+file PROJECT_TARGET => SRC do |t|
+  c = Gmcs.new "exe", t.name, t.prerequisites
+  c.libs = [ BIN_DIR, ITEXT_SHARP_DIR ]
+  c.references = [ "itextsharp.dll",
+                   "System.Data.dll", 
+                   "System.Configuration.dll",
+                   "Mono.Posix.dll",
+                   "Npgsql.dll" ]
+  c.packages = [ "gtk-sharp-2.0", "log4net" ]
+  c.debug = DEBUG
+  c.exec
+end
+
+# Build the DLL only if it is out of date with respect to any
+# of the source files.
+file TEST_PATH => TEST_SRC do |t|
+  c = Gmcs.new "exe", t.name, t.prerequisites
+  c.libs = [ BIN_DIR ]
+  c.references = [ "itextsharp.dll",
+                   "System.Data.dll", 
+                   "System.Configuration.dll",
+                   "Mono.Posix.dll",
+                   "Npgsql.dll",
+                   "pango-sharp.dll" ]
+  c.packages = [ "gtk-sharp-2.0", "log4net", "nunit" ]
+  c.debug = DEBUG
+  c.exec
+end
+
+task :test => [ :testinit, TEST_PATH ] do |t|
+  nu = NUnitConsole.new t.prerequisites[1]
+  nu.xml = TEST_RESULTS_PATH
+  nu.exec
+end
+
+task :deploy => [ :init, DEPLOY_PATH ] do
+  # Now, take care of the templates and the configuration file
+  cp CONFIG_FILE, BIN_DIR
+  cp "#{ITEXT_SHARP_DIR}/itextsharp.dll", BIN_DIR
+end
+
+file DEPLOY_PATH => [ PROJECT_TARGET ] do |t|
+  cp t.prerequisites[0], t.name
+end
+  
