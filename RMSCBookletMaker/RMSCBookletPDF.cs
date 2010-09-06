@@ -165,12 +165,12 @@ namespace RMSCBookletMaker
 			p.SpacingAfter = 20;
 			Add(p);
 
-			p = new Paragraph("Lunch will be served Saturday and Sunday from 11:30am to 1:30pm in the Aspen room and lounge area.");
+			p = new Paragraph("Lunch will be served Saturday and Sunday from 12:00pm to 1:30pm in the Aspen room and lounge area.");
 			p.Font.Size = 20;
 			p.SpacingAfter = 20;
 			Add(p);
 
-			p = new Paragraph("Retailers and exhibitors - We will be having a Saturday night social hour that will start @ 5:00pm in the Aspen room.");
+			p = new Paragraph("Retailers and exhibitors - We will be having a social hour on Saturday night in the Aspen room starting at 5:00pm.");
 			p.Font.Size = 20;
 			p.SpacingAfter = 20;
 			Add(p);
@@ -395,21 +395,21 @@ namespace RMSCBookletMaker
 // The following comments are for the inclusion of notes pages.
 // We currently don't want this, but I'm leaving it in for the future.
 //
-//			int currentPage = this.PageNumber;
-//			Console.WriteLine(string.Format("Current Page: {0}", currentPage));
-//			int remainder = currentPage % 4;
-//			int notesPagesToAdd = (remainder > 0) ? remainder - 1 : 3;
+			int currentPage = this.PageNumber;
+			Console.WriteLine(string.Format("Current Page: {0}", currentPage));
+			int remainder = currentPage % 4;
+			int notesPagesToAdd = (remainder > 0) ? remainder - 1 : 3;
 //			Console.WriteLine(string.Format("Notes pages to add: {0}", notesPagesToAdd));
 //			
-//			for (int i=0; i<notesPagesToAdd; i++)
-//			{
-//				NewPage();
-//				Paragraph pNote = new Paragraph("NOTES");
-//				pNote.Font.Size = 20;
-//				pNote.Font.SetStyle(Font.BOLD | Font.UNDERLINE);
-//				pNote.Alignment = Element.ALIGN_CENTER;
-//				Add(pNote);
-//			}
+			for (int i=0; i<notesPagesToAdd; i++)
+			{
+				NewPage();
+				Paragraph pNote = new Paragraph("NOTES");
+				pNote.Font.Size = 20;
+				pNote.Font.SetStyle(Font.BOLD | Font.UNDERLINE);
+				pNote.Alignment = Element.ALIGN_CENTER;
+				Add(pNote);
+			}
 			
 			NewPage();
 			

@@ -13,7 +13,7 @@ DEBUG = (ENV['DEBUG_FLAG']) ? ENV['DEBUG_FLAG'].match(/^[tT]rue$/) != nil : fals
 # The directory where the DLL will be deployed
 BIN_DIR = (ENV['BIN_DIR']) ? ENV['BIN_DIR'] : '../bin'
 
-ITEXT_SHARP_DIR = '/home/djs/ThirdParty/iTextSharp'
+ITEXT_SHARP_DIR = '/home/djs/Projects/RMSCBooklet/bin.save'
 
 # The output directories to use
 BUILD_DIR, TEST_DIR = create_output_directories DEBUG
